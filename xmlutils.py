@@ -16,8 +16,8 @@ def get_attr_list(root):
 def get_value(root):
     return root.text.strip()
 
-def get_elems(root, attrname, uniq=False):
-    all_attr_elems=root.findall(".//"+attrname)
+def get_elems(root, attrname, path_prefix=".//", uniq=False):
+    all_attr_elems=root.findall(path_prefix+attrname)
     if uniq:
         assert(len(all_attr_elems) == 1)
         return all_attr_elems[0]
@@ -28,11 +28,18 @@ def get_value_elems(root, attrname):
     for elem in get_elems(root, attrname):
         values.append(get_value(elem))
     return values
+
+def get_value_elem(root, attrname):
+    elem=get_elems(root, attrname, uniq=True)
+    return get_value(elem)
+
                       
 
 #<attr>value<attr9>
 def get_value_by_attr(root, attrname):
-    elem=get_elems(root, attrname, True)
+    elem=get_elems(root, attrname, uniq=True)
+    if elem is None:
+        return None
     return elem.text.strip()
     
 
@@ -76,7 +83,7 @@ def get_elems_by_parent_child_key_value(root,parent, child, key, value, uniq=Fal
 class XmlListConfig(list):
     def __init__(self, aList):
         for element in aList:
-            if element:
+            if element is not None:
                 # treat like dict
                 if len(element) == 1 or element[0].tag != element[1].tag:
                     self.append(XmlDictConfig(element))
@@ -108,7 +115,7 @@ class XmlDictConfig(dict):
         if parent_element.items():
             self.update(dict(parent_element.items()))
         for element in parent_element:
-            if element:
+            if element is not None:
                 # treat like dict - we assume that if the first two tags
                 # in a series are different, then they are all different.
                 if len(element) == 1 or element[0].tag != element[1].tag:
