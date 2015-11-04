@@ -3,7 +3,11 @@ import xmlutils as xu
 #element,
 def read_metadata(metadata_fn):
     return xu.read_file(metadata_fn)
-    
+
+def set_model_name(metadata_root, model_name):
+    model_name_elem = xu.get_elems(metadata_root, 'model', uniq=True)
+    model_name_elem.text = model_name
+
 def get_model_name(metadata_root):
     #<model>modelname</model>
     model_name=xu.get_value_by_attr(metadata_root, 'model')
@@ -44,3 +48,9 @@ def get_foreign_keys(metadata_root):
 
     return all_foreign_keys
  
+
+def get_delimiter(metadata_root):
+    elem = xu.get_elems(metadata_root, 'delimiter', uniq=True)
+    if elem is None:
+        return None
+    return xu.get_value_elem(metadata_root, 'delimiter')

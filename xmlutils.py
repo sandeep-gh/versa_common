@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import xml.etree
 
 #element is xml tree node
 #keys are elements that are queried
@@ -8,16 +9,26 @@ def read_file(xml_fn):
     xmldoc = ET.parse(xml_fn)
     return xmldoc
 
+def tostring(root):
+    return ET.dump(root)
+
 def get_attr_list(root):
     #<root attr1='', attr2=''></root>
     return root.keys()
 
 
 def get_value(root):
-    return root.text.strip()
+    try:
+     val = root.text.strip()
+     return val
+    except:
+        return root.text
 
 def get_elems(root, attrname, path_prefix=".//", uniq=False):
     all_attr_elems=root.findall(path_prefix+attrname)
+    
+    if len(all_attr_elems) == 0:
+        return None
     if uniq:
         assert(len(all_attr_elems) == 1)
         return all_attr_elems[0]
@@ -77,6 +88,13 @@ def get_elems_by_parent_child_key_value(root,parent, child, key, value, uniq=Fal
         return childnodes[0]
     return childnodes
 
+def gen_node(node_label, node_text):
+    '''
+    create a new node
+    '''
+    node = ET.Element(node_label)
+    node.text = node_text
+    return node
 
 
 
