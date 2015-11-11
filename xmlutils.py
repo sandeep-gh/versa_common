@@ -5,6 +5,14 @@ import xml.etree
 #keys are elements that are queried
 #value is string literal
 
+def check_if_xml_tree(data):
+    if isinstance(data, xml.etree.ElementTree.Element):
+        return True
+    return False
+
+def read_string(xml_str):
+    return ET.fromstring(xml_str)
+
 def read_file(xml_fn):
     xmldoc = ET.parse(xml_fn)
     return xmldoc
@@ -18,6 +26,9 @@ def get_attr_list(root):
 
 
 def get_value(root):
+    if root is None:
+        return None
+
     try:
      val = root.text.strip()
      return val
