@@ -51,8 +51,8 @@ def get_value_elems(root, attrname):
         values.append(get_value(elem))
     return values
 
-def get_value_elem(root, attrname):
-    elem=get_elems(root, attrname, uniq=True)
+def get_value_elem(root, attrname, path_prefix='.//'):
+    elem=get_elems(root, attrname, path_prefix=path_prefix, uniq=True)
     return get_value(elem)
 
                       
