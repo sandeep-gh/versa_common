@@ -69,6 +69,7 @@ def get_value_by_attr(root, attrname):
 #<elemn><key>value</key></elemn>
 def get_elem_by_key_value(xmldoc, elemn, key,value, uniq=False):
     all_elems = xmldoc.findall('.//'+elemn+'[' + key+ '=\'' +value+'\']') 
+    print all_elems
     if uniq:
         assert(len(all_elems) == 1)
         return all_elems[0]

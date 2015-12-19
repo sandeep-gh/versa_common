@@ -54,3 +54,10 @@ def get_delimiter(metadata_root):
     if elem is None:
         return None
     return xu.get_value_elem(metadata_root, 'delimiter')
+
+
+def get_header(metadata_root):
+    elem = xu.get_elems(metadata_root, 'header', uniq=True)
+    if elem is None:
+        return False
+    return xu.get_value_elem(metadata_root, 'header')
