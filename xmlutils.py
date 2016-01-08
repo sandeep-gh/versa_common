@@ -8,6 +8,9 @@ import xml.etree
 def check_if_xml_tree(data):
     if isinstance(data, xml.etree.ElementTree.Element):
         return True
+    if isinstance(data, xml.etree.ElementTree.ElementTree):
+        return True
+
     return False
 
 def read_string(xml_str):

@@ -2,6 +2,8 @@ import xmlutils as xu
 
 #element,
 def read_metadata(metadata_fn):
+    if xu.check_if_xml_tree(metadata_fn):
+        return metadata_fn
     return xu.read_file(metadata_fn)
 
 def set_model_name(metadata_root, model_name):
