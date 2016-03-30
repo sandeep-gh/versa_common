@@ -48,6 +48,7 @@ def get_elems(root, attrname, path_prefix=".//", uniq=False):
         return all_attr_elems[0]
     return all_attr_elems
 
+
 def get_value_elems(root, attrname):
     values=[]
     for elem in get_elems(root, attrname):
@@ -67,7 +68,25 @@ def get_value_by_attr(root, attrname):
         return None
     return elem.text.strip()
     
+def has_key(root, attr_path):
+    '''
+    find the key anywhere in the doc.
 
+    a key is an xml item, specifically
+    the label of the xml item. for e.g.
+    in this fragment 
+    <alpha>
+       <beta>iota</beta>
+    </alpha>
+    Here "alpha/beta" is the key.
+    
+  
+    '''
+    elem  = root.findall(attr_path)
+    if not elem:
+        return False
+    return True
+    
 
 #<elemn><key>value</key></elemn>
 def get_elem_by_key_value(xmldoc, elemn, key,value, uniq=False):
