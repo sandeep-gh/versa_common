@@ -39,6 +39,10 @@ def get_value(root):
         return root.text
 
 def get_elems(root, attrname, path_prefix=".//", uniq=False):
+    '''
+    Not sure what the return type should be for non-existing element
+    Check all places where this function is begin called
+    '''
     all_attr_elems=root.findall(path_prefix+attrname)
     
     if len(all_attr_elems) == 0:
@@ -130,7 +134,10 @@ def gen_node(node_label, node_text):
     node.text = node_text
     return node
 
-
+def update_item(cfg_root=None, elem_label=None, elem_text=None):
+    elem = get_elems(cfg_root, elem_label, uniq=True)
+    elem.text = elem_text
+    return
 
 class XmlListConfig(list):
     def __init__(self, aList):
@@ -193,3 +200,28 @@ class XmlDictConfig(dict):
             # the text
             else:
                 self.update({element.tag: element.text})
+
+def create_dict_param_attr(xml_root=None):
+    scan_elems = [ (elem, elem.tag) for elem in xml_root.findall("./")]
+    all_elems = []
+    while 1:
+        if not scan_elems:
+            break
+        next_scan_elems = []
+        for elem,tag in scan_elems:
+            if elem.text is not None:
+                if not elem.text.isspace and len(elem.text) > 0:
+                    all_elems.append((tag, elem.text))
+            for ch in elem.getchildren(): #for each child of the elem
+                next_scan_elems.append((ch, tag+'/'+ch.tag))
+                if  ch.text is not None : 
+                    if not ch.text.isspace and len(ch.text) > 0:
+                        all_elems.append((tag + "/" +ch.tag, ch.text))
+        scan_elems = next_scan_elems
+    xml_dict = {}
+    for x,y in all_elems:
+        if len(y) > 0 and not y.isspace():
+            xml_dict[x] = y
+    return xml_dict
+
+    
