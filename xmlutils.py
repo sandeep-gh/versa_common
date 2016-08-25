@@ -1,14 +1,19 @@
 import xml.etree.ElementTree as ET
-import xml.etree
-
+import xml.etree as etree
+from xml.dom import minidom
+import os
+import subprocess
+from string import Template
 #element is xml tree node
 #keys are elements that are queried
 #value is string literal
 
+module_dir=os.path.dirname(os.path.realpath(__file__))
+
 def check_if_xml_tree(data):
-    if isinstance(data, xml.etree.ElementTree.Element):
+    if isinstance(data, etree.ElementTree.Element):
         return True
-    if isinstance(data, xml.etree.ElementTree.ElementTree):
+    if isinstance(data, etree.ElementTree.ElementTree):
         return True
 
     return False
@@ -17,11 +22,16 @@ def read_string(xml_str):
     return ET.fromstring(xml_str)
 
 def read_file(xml_fn):
+    if check_if_xml_tree(xml_fn):
+        return xml_fn
+
     xmldoc = ET.parse(xml_fn)
     return xmldoc
 
 def tostring(root):
-    return ET.dump(root)
+    root_txt =  ET.tostring(root)
+    return minidom.parseString(root_txt).toprettyxml()
+    #return ET.dump(root)
 
 def get_attr_list(root):
     #<root attr1='', attr2=''></root>
@@ -59,7 +69,11 @@ def get_value_elems(root, attrname):
         values.append(get_value(elem))
     return values
 
+#this is the most commonly used one -- sort of like key-value pair 
 def get_value_elem(root, attrname, path_prefix='.//'):
+    '''
+    give value for attrname
+    '''
     elem=get_elems(root, attrname, path_prefix=path_prefix, uniq=True)
     return get_value(elem)
 
@@ -225,3 +239,15 @@ def create_dict_param_attr(xml_root=None):
     return xml_dict
 
     
+def merge_xml(xml1_path, xml2_path, xmlo_path):
+    global module_dir
+    with open("tmp.xml", "w+") as fh:
+        fh.write(Template("""<?xml version="1.0"?>
+<merge xmlns="http://informatik.hu-berlin.de/merge">
+  <file1>${xml1_path}</file1>
+  <file2>${xml2_path}</file2>
+</merge>""").substitute(locals()))
+    a = locals()
+    a.update(globals())
+    merge_cmd = Template("xsltproc ${module_dir}/merge.xslt tmp.xml > ${xmlo_path}").substitute(locals())
+    subprocess.call(merge_cmd, shell=True)
