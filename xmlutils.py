@@ -77,6 +77,16 @@ def get_value_elem(root, attrname, path_prefix='.//'):
     elem=get_elems(root, attrname, path_prefix=path_prefix, uniq=True)
     return get_value(elem)
 
+def get_value_of_key(root=None, key=None, path_prefix='.//'):
+    '''
+    <key>value<key>
+    key should be unique in the xml of the root
+    '''
+    elem=get_elems(root, key, path_prefix=path_prefix, uniq=True)
+    return get_value(elem)
+
+
+
                       
 
 #<attr>value<attr9>
@@ -147,6 +157,14 @@ def gen_node(node_label, node_text):
     node = ET.Element(node_label)
     node.text = node_text
     return node
+
+def append_elem(dock_root, elem_root):
+    '''
+    dock_root is the master xml element
+    elem_root is the xml element to be added to dock_root
+    '''
+    dock_root.append(elem_root)
+
 
 def update_item(cfg_root=None, elem_label=None, elem_text=None):
     elem = get_elems(cfg_root, elem_label, uniq=True)
