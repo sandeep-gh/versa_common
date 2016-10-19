@@ -4,6 +4,8 @@ from xml.dom import minidom
 import os
 import subprocess
 from string import Template
+import xml.etree.ElementInclude
+
 #element is xml tree node
 #keys are elements that are queried
 #value is string literal
@@ -19,14 +21,18 @@ def check_if_xml_tree(data):
     return False
 
 def read_string(xml_str):
-    return ET.fromstring(xml_str)
+    xmldoc = ET.fromstring(xml_str)
+    xml.etree.ElementInclude.include(xmldoc)
+    return xmldoc
 
 def read_file(xml_fn):
     if check_if_xml_tree(xml_fn):
         return xml_fn
 
     xmldoc = ET.parse(xml_fn)
-    return xmldoc
+    root = xmldoc.getroot()
+    xml.etree.ElementInclude.include(root)
+    return root
 
 def tostring(root):
     root_txt =  ET.tostring(root)
@@ -96,7 +102,7 @@ def get_value_by_attr(root, attrname):
         return None
     return elem.text.strip()
     
-def has_key(root, attr_path):
+def has_key(root, attr_path, path_prefix=''):
     '''
     find the key anywhere in the doc.
 
@@ -110,7 +116,7 @@ def has_key(root, attr_path):
     
   
     '''
-    elem  = root.findall(attr_path)
+    elem  = root.findall(path_prefix + attr_path)
     if not elem:
         return False
     return True
