@@ -5,6 +5,8 @@ import os
 import subprocess
 from string import Template
 import xml.etree.ElementInclude
+import xmldict
+import collections
 
 #element is xml tree node
 #keys are elements that are queried
@@ -23,6 +25,7 @@ def check_if_xml_tree(data):
 def read_string(xml_str):
     xmldoc = ET.fromstring(xml_str)
     xml.etree.ElementInclude.include(xmldoc)
+    xml.etree.ElementInclude.include(xmldoc)
     return xmldoc
 
 def read_file(xml_fn):
@@ -30,13 +33,15 @@ def read_file(xml_fn):
         return xml_fn
 
     xmldoc = ET.parse(xml_fn)
-    root = xmldoc.getroot()
+    root = xmldoc.getroot() 
+    xml.etree.ElementInclude.include(root)
     xml.etree.ElementInclude.include(root)
     return root
 
 def tostring(root):
     root_txt =  ET.tostring(root)
-    return minidom.parseString(root_txt).toprettyxml()
+    root_txt = minidom.parseString(root_txt).toprettyxml()
+    return root_txt
     #return ET.dump(root)
 
 def get_attr_list(root):
@@ -54,14 +59,28 @@ def get_value(root):
     except:
         return root.text
 
-def get_elems(root, attrname, path_prefix=".//", uniq=False):
+def get_elem_iter(root, attrname, path_prefix=".//"):
     '''
     Not sure what the return type should be for non-existing element
     Check all places where this function is begin called
     '''
     all_attr_elems=root.findall(path_prefix+attrname)
     
+    for elem in all_attr_elems:
+        yield elem
+
+
+def get_elems(root, attrname, path_prefix=".//", uniq=False, error_if_not_found=True):
+    '''
+    Not sure what the return type should be for non-existing element
+    Check all places where this function is begin called
+    error_if_not_found: if the attribute is not found than an error gets raised. 
+    the expected usage is to check for has_key before calling this function.
+    '''
+    all_attr_elems=root.findall(path_prefix+attrname)
+    
     if len(all_attr_elems) == 0:
+        assert None #raise error
         return None
     if uniq:
         assert(len(all_attr_elems) == 1)
@@ -102,7 +121,7 @@ def get_value_by_attr(root, attrname):
         return None
     return elem.text.strip()
     
-def has_key(root, attr_path, path_prefix=''):
+def has_key(root, attr_path, path_prefix='./'):
     '''
     find the key anywhere in the doc.
 
@@ -161,8 +180,14 @@ def gen_node(node_label, node_text):
     create a new node
     '''
     node = ET.Element(node_label)
-    node.text = node_text
+    node.text = node_text 
     return node
+
+def dock_elem_value(cfg_root=None, dock_path=None, elem_name=None, elem_value=None):
+    node = ET.Element(elem_name)
+    node.text = elem_value
+    dock_elem = get_elems(cfg_root, dock_path, uniq=True)
+    dock_elem.append(node)
 
 def append_elem(dock_root, elem_root):
     '''
@@ -172,7 +197,7 @@ def append_elem(dock_root, elem_root):
     dock_root.append(elem_root)
 
 
-def update_item(cfg_root=None, elem_label=None, elem_text=None):
+def update_elem_value(cfg_root=None, elem_label=None, elem_text=None):
     elem = get_elems(cfg_root, elem_label, uniq=True)
     elem.text = elem_text
     return
@@ -239,28 +264,20 @@ class XmlDictConfig(dict):
             else:
                 self.update({element.tag: element.text})
 
+def flatten(d, parent_key='', sep='_'):
+    items = []
+    for k, v in d.items():
+        new_key = parent_key + sep + k if parent_key else k
+        if isinstance(v, collections.MutableMapping):
+            items.extend(flatten(v, new_key, sep=sep).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
+
 def create_dict_param_attr(xml_root=None):
-    scan_elems = [ (elem, elem.tag) for elem in xml_root.findall("./")]
-    all_elems = []
-    while 1:
-        if not scan_elems:
-            break
-        next_scan_elems = []
-        for elem,tag in scan_elems:
-            if elem.text is not None:
-                if not elem.text.isspace and len(elem.text) > 0:
-                    all_elems.append((tag, elem.text))
-            for ch in elem.getchildren(): #for each child of the elem
-                next_scan_elems.append((ch, tag+'/'+ch.tag))
-                if  ch.text is not None : 
-                    if not ch.text.isspace and len(ch.text) > 0:
-                        all_elems.append((tag + "/" +ch.tag, ch.text))
-        scan_elems = next_scan_elems
-    xml_dict = {}
-    for x,y in all_elems:
-        if len(y) > 0 and not y.isspace():
-            xml_dict[x] = y
-    return xml_dict
+    nested_xml_dict =   xmldict.xml_to_dict(xml_root)
+    flat_xml_dict = flatten(nested_xml_dict, sep='/')
+    return flat_xml_dict
 
     
 def merge_xml(xml1_path, xml2_path, xmlo_path):
