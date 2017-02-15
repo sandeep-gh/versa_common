@@ -119,7 +119,15 @@ def get_value_by_attr(root, attrname):
     elem=get_elems(root, attrname, uniq=True)
     if elem is None:
         return None
-    return elem.text.strip()
+    #when an elem is created at runtime
+    #the xml keeps the type info
+    #else its all string
+    #when docking..lets make it a string
+    try:
+        res = elem.text.strip()
+    except:
+        res = elem.text
+    return res
     
 def has_key(root, attr_path, path_prefix='./'):
     '''
@@ -185,9 +193,12 @@ def gen_node(node_label, node_text):
 
 def dock_elem_value(cfg_root=None, dock_path=None, elem_name=None, elem_value=None):
     node = ET.Element(elem_name)
-    node.text = elem_value
-    dock_elem = get_elems(cfg_root, dock_path, uniq=True)
-    dock_elem.append(node)
+    node.text = str(elem_value)
+    if dock_path is not None:
+        dock_elem = get_elems(cfg_root, dock_path, uniq=True)
+        dock_elem.append(node)
+    else:
+        cfg_root.append(node)
 
 def append_elem(dock_root, elem_root):
     '''
