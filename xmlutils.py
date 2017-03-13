@@ -152,7 +152,6 @@ def has_key(root, attr_path, path_prefix='./'):
 #<elemn><key>value</key></elemn>
 def get_elem_by_key_value(xmldoc, elemn, key,value, uniq=False):
     all_elems = xmldoc.findall('.//'+elemn+'[' + key+ '=\'' +value+'\']') 
-    print all_elems
     if uniq:
         assert(len(all_elems) == 1)
         return all_elems[0]
@@ -177,7 +176,6 @@ def get_elems_by_parent_child_key_value(root,parent, child, key, value, uniq=Fal
     childnodes=root.findall(xpath_str)
     if uniq:
         if(len(childnodes) == 0):
-            print xpath_str
             assert(0)
         assert(len(childnodes) == 1)
         return childnodes[0]
