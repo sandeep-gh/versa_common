@@ -87,11 +87,11 @@ def signal_send(host, port, msg='database loaded'):
 
 
 
-def get_new_port():
+def get_new_port(port_server_ip='10.102.254.241'):
     s = socket.socket()
-    host = '10.102.254.241'
     rport =  39785
-    s.connect((host, rport))
+    s.connect((port_server_ip, rport))
     port= s.recv(1024)
+    print "recived port ", port
     s.close()
     return int(port)
