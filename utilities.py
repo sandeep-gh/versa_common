@@ -6,9 +6,11 @@ import time
 import socket
 import subprocess
 import sys
+import xmlutils as xu
 from multiprocessing.connection import Listener
 from multiprocessing.connection import Client
 
+module_dir=os.path.dirname(os.path.realpath(__file__))
 
 def get_last_file_by_pattern(pattern=None):
     files = glob.glob(pattern)
@@ -87,7 +89,24 @@ def signal_send(host, port, msg='database loaded'):
 
 
 
-def get_new_port(port_server_ip='10.102.254.241'):
+
+
+
+system_config_xml_fn = None
+import os.path
+from  system_config import config_dir
+if os.path.isfile(config_dir + '/dicex_haswell.sh'):
+    system_config_xml_fn = module_dir + '/haswell_system_config.xml'
+if os.path.isfile(config_dir+ '/dicex_shadowfax.sh'):
+    system_config_xml_fn = module_dir + '/shadowfax_system_config.xml'
+
+print "system_config_xml  = ", system_config_xml_fn
+system_config_root = xu.read_file(system_config_xml_fn)
+cluster_login_ip = xu.get_value_of_key(system_config_root, 'port_server_ip')
+def get_new_port(port_server_ip=None):
+    global cluster_login_ip
+    if port_server_ip is None:
+        port_server_ip = cluster_login_ip
     s = socket.socket()
     rport =  39785
     s.connect((port_server_ip, rport))
@@ -95,3 +114,23 @@ def get_new_port(port_server_ip='10.102.254.241'):
     print "recived port ", port
     s.close()
     return int(port)
+
+def get_qsub_queue_args(host_type='standard'):
+    cluster_name = xu.get_value_of_key(system_config_root, 'cluster_name')
+    qsub_group_list=xu.get_value_of_key(system_config_root, 'cluster/job_queue/' + host_type + '/group')
+    qsub_q=xu.get_value_of_key(system_config_root, 'cluster/job_queue/'+host_type+'/queue_name')
+    return [qsub_group_list, qsub_q]
+    
+
+
+def get_port_server_ip():
+    port_server_ip=xu.get_value_of_key(system_config_root, 'port_server_ip')
+    return port_server_ip
+
+def get_cluster_name():
+    cluster_name = xu.get_value_of_key(system_config_root, 'cluster_name')
+    return cluster_name
+
+def get_dicex_base_dir():
+    dicex_base_dir = xu.get_value_of_key(system_config_root, 'dicex_base_dir')
+    return dicex_base_dir
