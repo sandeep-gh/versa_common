@@ -1,0 +1,22 @@
+<system_config>
+<pgxxc_home>/sfxhome/pgxxc/public</pgxxc_home>
+<port_server_ip>10.112.254.241</port_server_ip>
+<update_ld_lib_env>/home/pgxxc/opensource_projects//geos/lib:/home/pgxxc/opensource_projects//proj4/lib/:/home/pgxxc/opensource_projects//gdal/lib/:/home/pgxxc/easybuild/software/shadowfax-westmere/PostgreSQL/9.6.2-foss-2016b-Python-2.7.12//lib</update_ld_lib_env>
+<cluster_name>haswell</cluster_name>
+<dicex_base_dir>/home/pgxxc/</dicex_base_dir>
+<update_path_env>/home/pgxxc/easybuild/software/shadowfax-westmere/PostgreSQL/9.6.2-foss-2016b-Python-2.7.12/bin</update_path_env>
+<modules></modules>
+
+<cluster> 
+  <job_queue>
+    <standard>
+      <queue_name>dedicated_q</queue_name>
+      <group>haswell</group>
+    </standard>
+    <largemem>
+      <queue_name>smp_q</queue_name>
+      <group>haswell</group>
+    </largemem>
+  </job_queue>
+</cluster>
+</system_config>

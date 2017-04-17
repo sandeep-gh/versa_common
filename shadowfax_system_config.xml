@@ -1,0 +1,22 @@
+<system_config>
+<pgxxc_home>/home/pgxxc/public</pgxxc_home>
+<port_server_ip>10.102.254.241</port_server_ip>
+<update_path_env>/home/pgxxc/binaries/postgres-9.6/bin/</update_path_env>
+<cluster_name>shadowfax</cluster_name>
+
+<update_ld_lib_env>/apps/packages/db/oracle/product/12.1.0/client_1/lib:/home/pgxxc/binaries/gdal-2.0.1/lib:/home/pgxxc/binaries/postgres-9.6/lib:/home/pgxxc/john/postgis_prereq/GEOS/lib:/home/pgxxc/john/postgis_prereq/proj4/lib</update_ld_lib_env>
+<modules>module load db/oracle/client/11.2.0; module load math/epd/7.3-1;</modules>
+<cluster> 
+  <job_queue>
+    <standard>
+      <queue_name>dedicated_q</queue_name>
+      <group>sfx</group>
+    </standard>
+    <largemem>
+      <queue_name>sfxsmp_q</queue_name>
+      <group>sfxsmp</group>
+    </largemem>
+  </job_queue>
+</cluster>
+
+</system_config>
