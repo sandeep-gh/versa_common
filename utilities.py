@@ -100,9 +100,12 @@ if os.path.isfile(config_dir + '/dicex_haswell.sh'):
 if os.path.isfile(config_dir+ '/dicex_shadowfax.sh'):
     system_config_xml_fn = module_dir + '/shadowfax_system_config.xml'
 
-print "system_config_xml  = ", system_config_xml_fn
 system_config_root = xu.read_file(system_config_xml_fn)
 cluster_login_ip = xu.get_value_of_key(system_config_root, 'port_server_ip')
+
+def get_system_config_root():
+    return system_config_root
+
 def get_new_port(port_server_ip=None):
     global cluster_login_ip
     if port_server_ip is None:
@@ -121,8 +124,6 @@ def get_qsub_queue_args(host_type='standard'):
     qsub_q=xu.get_value_of_key(system_config_root, 'cluster/job_queue/'+host_type+'/queue_name')
     return [qsub_group_list, qsub_q]
     
-
-
 def get_port_server_ip():
     port_server_ip=xu.get_value_of_key(system_config_root, 'port_server_ip')
     return port_server_ip
@@ -134,3 +135,7 @@ def get_cluster_name():
 def get_dicex_base_dir():
     dicex_base_dir = xu.get_value_of_key(system_config_root, 'dicex_base_dir')
     return dicex_base_dir
+
+def get_db_system_param_value_dict(host_type='standard'):
+    db_cfg_elem = xu.get_elems(system_config_root, 'cluster/job_queue/' + host_type, uniq=True)
+    return xu.XmlDictConfig(db_cfg_elem)

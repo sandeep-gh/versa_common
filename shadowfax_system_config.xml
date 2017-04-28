@@ -1,20 +1,33 @@
 <system_config>
-<pgxxc_home>/home/pgxxc/public</pgxxc_home>
+<pgxxc_home>/home/pgxxc/</pgxxc_home>
 <port_server_ip>10.102.254.241</port_server_ip>
-<update_path_env>/home/pgxxc/binaries/postgres-9.6/bin/</update_path_env>
 <cluster_name>shadowfax</cluster_name>
 
-<update_ld_lib_env>/apps/packages/db/oracle/product/12.1.0/client_1/lib:/home/pgxxc/binaries/gdal-2.0.1/lib:/home/pgxxc/binaries/postgres-9.6/lib:/home/pgxxc/john/postgis_prereq/GEOS/lib:/home/pgxxc/john/postgis_prereq/proj4/lib</update_ld_lib_env>
-<modules>module load db/oracle/client/11.2.0; module load math/epd/7.3-1;</modules>
 <cluster> 
   <job_queue>
     <standard>
       <queue_name>dedicated_q</queue_name>
       <group>sfx</group>
+      <queue_ppn>8</queue_ppn>
+      <shared_buffers>8GB</shared_buffers>
+      <maintenance_work_mem>10GB</maintenance_work_mem>
+      <work_mem>2GB</work_mem>
+      <effective_cache_size>8GB</effective_cache_size>
+      <max_wal_size>8GB</max_wal_size>
+      <checkpoint_timeout>30min</checkpoint_timeout>
+      <max_connections>10</max_connections>
     </standard>
     <largemem>
       <queue_name>sfxsmp_q</queue_name>
       <group>sfxsmp</group>
+      <queue_ppn>30</queue_ppn>
+      <shared_buffers>250GB</shared_buffers>
+      <maintenance_work_mem>30GB</maintenance_work_mem>
+      <work_mem>8GB</work_mem>
+      <effective_cache_size>40GB</effective_cache_size>
+      <max_wal_size>32GB</max_wal_size>
+      <checkpoint_timeout>60min</checkpoint_timeout>
+      <max_connections>40</max_connections>
     </largemem>
   </job_queue>
 </cluster>

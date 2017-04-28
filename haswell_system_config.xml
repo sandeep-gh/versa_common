@@ -1,21 +1,38 @@
 <system_config>
 <pgxxc_home>/sfxhome/pgxxc/public</pgxxc_home>
 <port_server_ip>10.112.254.241</port_server_ip>
-<update_ld_lib_env>/home/pgxxc/opensource_projects//geos/lib:/home/pgxxc/opensource_projects//proj4/lib/:/home/pgxxc/opensource_projects//gdal/lib/:/home/pgxxc/easybuild/software/shadowfax-westmere/PostgreSQL/9.6.2-foss-2016b-Python-2.7.12//lib</update_ld_lib_env>
+<update_ld_lib_env>/home/pgxxc/opensource_projects//geos/lib:/home/pgxxc/opensource_projects//proj4/lib/:/home/pgxxc/opensource_projects//gdal/lib/:/home/pgxxc/opensource_projects/postgresql/lib</update_ld_lib_env>
 <cluster_name>haswell</cluster_name>
 <dicex_base_dir>/home/pgxxc/</dicex_base_dir>
-<update_path_env>/home/pgxxc/easybuild/software/shadowfax-westmere/PostgreSQL/9.6.2-foss-2016b-Python-2.7.12/bin</update_path_env>
-<modules></modules>
+<update_path_env>/home/pgxxc/opensource_projects/postgresql/bin</update_path_env>
+<modules>module load db/oracle/client/12.1.0;</modules>
 
 <cluster> 
   <job_queue>
     <standard>
       <queue_name>dedicated_q</queue_name>
+      <queue_ppn>16</queue_ppn>
       <group>haswell</group>
+      <shared_buffers>8GB</shared_buffers>
+      <maintenance_work_mem>10GB</maintenance_work_mem>
+      <work_mem>2GB</work_mem>
+      <effective_cache_size>8GB</effective_cache_size>
+      <max_wal_size>8GB</max_wal_size>
+      <checkpoint_timeout>30min</checkpoint_timeout>
+      <max_connections>10</max_connections>
+
     </standard>
     <largemem>
       <queue_name>smp_q</queue_name>
+      <queue_ppn>60</queue_ppn>
       <group>haswell</group>
+      <shared_buffers>400GB</shared_buffers>
+      <maintenance_work_mem>40GB</maintenance_work_mem>
+      <work_mem>10GB</work_mem>
+      <effective_cache_size>80GB</effective_cache_size>
+      <max_wal_size>100GB</max_wal_size>
+      <checkpoint_timeout>120min</checkpoint_timeout>
+      <max_connections>80</max_connections>
     </largemem>
   </job_queue>
 </cluster>
