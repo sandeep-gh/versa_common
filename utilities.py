@@ -1,6 +1,5 @@
 import glob
 import os
-import os
 import shutil
 import time
 import socket
@@ -122,7 +121,8 @@ def get_qsub_queue_args(host_type='standard'):
     cluster_name = xu.get_value_of_key(system_config_root, 'cluster_name')
     qsub_group_list=xu.get_value_of_key(system_config_root, 'cluster/job_queue/' + host_type + '/group')
     qsub_q=xu.get_value_of_key(system_config_root, 'cluster/job_queue/'+host_type+'/queue_name')
-    return [qsub_group_list, qsub_q]
+    qsub_ppn = xu.get_value_of_key(system_config_root, 'cluster/job_queue/'+host_type+'/queue_ppn')
+    return [qsub_group_list, qsub_q, qsub_ppn]
     
 def get_port_server_ip():
     port_server_ip=xu.get_value_of_key(system_config_root, 'port_server_ip')
@@ -133,8 +133,8 @@ def get_cluster_name():
     return cluster_name
 
 def get_dicex_base_dir():
-    dicex_base_dir = xu.get_value_of_key(system_config_root, 'dicex_base_dir')
-    return dicex_base_dir
+    return  os.environ['dicex_base_dir']
+
 
 def get_db_system_param_value_dict(host_type='standard'):
     db_cfg_elem = xu.get_elems(system_config_root, 'cluster/job_queue/' + host_type, uniq=True)
