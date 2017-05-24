@@ -6,6 +6,7 @@ import socket
 import subprocess
 import sys
 import xmlutils as xu
+import imp
 from multiprocessing.connection import Listener
 from multiprocessing.connection import Client
 
@@ -18,6 +19,19 @@ def get_last_file_by_pattern(pattern=None):
     if files:
         files.sort(key=os.path.getmtime)
         return files[-1]
+
+def import_module(module_dir=None, module_name=None):
+    try:
+        if module_dir is None:
+            module_dir = os.getcwd()
+        sys.path.append(module_dir)
+        imp.find_module(module_name)
+        module_obj=__import__(module_name)
+    except ImportError:
+        found=False
+        print ("import error:" + module_name)
+        assert(0)
+    return module_obj
 
 
 def remove_dir(dir):
@@ -70,15 +84,27 @@ def wait_for_file(fn, msg, wait_time=5):
             time.sleep(wait_time)
         else:
             return
-
-
-def signal_listen(port):
+def get_listener(port):
     address = (gethostname(), port)     # family is deduced to be 'AF_INET'
     listener = Listener(address, authkey='secret password')
-    conn = listener.accept()
-    #print 'connection accepted from', listener.last_accepted
-    msg=conn.recv()
-    return msg
+    return listener
+
+def signal_listen(listener, num_senders=1):
+    assert type(listener) is not int #previous incarnation of used port
+    all_msgs = []
+    for i in range(0, num_senders):
+        conn = listener.accept()
+        msg=conn.recv()
+        all_msgs.append(msg)
+    return all_msgs
+
+# def signal_listen(port):
+#     address = (gethostname(), port)     # family is deduced to be 'AF_INET'
+#     listener = Listener(address, authkey='secret password')
+#     conn = listener.accept()
+#     #print 'connection accepted from', listener.last_accepted
+#     msg=conn.recv()
+#     return msg
 
 def signal_send(host, port, msg='database loaded'):
     address = (host, port)     # family is deduced to be 'AF_INET'

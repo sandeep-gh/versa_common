@@ -5,7 +5,8 @@
 <cluster> 
   <job_queue>
     <standard>
-      <queue_name>dedicated_q</queue_name>
+      <!-- <queue_name>dedicated_q</queue_name> -->
+      <queue_name>sfx_q</queue_name>
       <group>sfx</group>
       <queue_ppn>8</queue_ppn>
       <shared_buffers>8GB</shared_buffers>
