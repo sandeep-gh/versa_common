@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import xml.etree as etree
 from xml.dom import minidom
 import os
+import sys
 import subprocess
 from string import Template
 import xml.etree.ElementInclude
@@ -31,8 +32,12 @@ def read_string(xml_str):
 def read_file(xml_fn):
     if check_if_xml_tree(xml_fn):
         return xml_fn
-
-    xmldoc = ET.parse(xml_fn)
+    try:
+        xmldoc = ET.parse(xml_fn)
+    except Exception as e:
+        print "file loading failed ", xml_fn
+        print e
+        sys.exit()
     root = xmldoc.getroot() 
     xml.etree.ElementInclude.include(root)
     xml.etree.ElementInclude.include(root)

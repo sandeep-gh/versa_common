@@ -1,11 +1,14 @@
 <system_config>
 <pgxxc_home>/sfxhome/pgxxc/public</pgxxc_home>
 <port_server_ip>10.112.254.241</port_server_ip>
-<update_ld_lib_env>/home/pgxxc/opensource_projects//geos/lib:/home/pgxxc/opensource_projects//proj4/lib/:/home/pgxxc/opensource_projects//gdal/lib/:/home/pgxxc/opensource_projects/postgresql/lib</update_ld_lib_env>
 <cluster_name>haswell</cluster_name>
 <dicex_base_dir>/home/pgxxc/</dicex_base_dir>
-<update_path_env>/home/pgxxc/opensource_projects/postgresql/bin</update_path_env>
-<modules>module load db/oracle/client/12.1.0;</modules>
+<epifast_exec_path>/home/pgxxc/public/epifast/branches/bin/EpiFast_Indemics</epifast_exec_path>
+<mpi_module>mvapich2/gcc</mpi_module>
+
+<!-- <update_path_env>/home/pgxxc/opensource_projects/postgresql/bin</update_path_env> -->
+<!-- <modules>module load db/oracle/client/12.1.0;</modules> -->
+<!-- <update_ld_lib_env>/home/pgxxc/opensource_projects//geos/lib:/home/pgxxc/opensource_projects//proj4/lib/:/home/pgxxc/opensource_projects//gdal/lib/:/home/pgxxc/opensource_projects/postgresql/lib</update_ld_lib_env> -->
 
 <cluster> 
   <job_queue>

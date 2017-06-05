@@ -2,6 +2,9 @@
 <pgxxc_home>/home/pgxxc/</pgxxc_home>
 <port_server_ip>10.102.254.241</port_server_ip>
 <cluster_name>shadowfax</cluster_name>
+<epifast_exec_path>/home/pgxxc/public/epifast/branches/bin/EpiFast_Indemics</epifast_exec_path>
+<mpi_module>mpi/mvapich2/gcc/4.7.2/1.9</mpi_module>
+
 <cluster> 
   <job_queue>
     <standard>

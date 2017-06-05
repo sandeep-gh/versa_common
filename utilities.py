@@ -115,6 +115,9 @@ def signal_send(host, port, msg='database loaded'):
 
 
 
+def count_iterable(i):
+    return sum(1 for e in i)
+
 
 
 system_config_xml_fn = None
@@ -158,6 +161,11 @@ def get_cluster_name():
     cluster_name = xu.get_value_of_key(system_config_root, 'cluster_name')
     return cluster_name
 
+def get_epifast_exec_path():
+    exec_path = xu.get_value_of_key(system_config_root, 'epifast_exec_path')
+    mpi_module = xu.get_value_of_key(system_config_root, 'mpi_module')
+    return [mpi_module, exec_path]
+
 def get_dicex_base_dir():
     return  os.environ['dicex_base_dir']
 
@@ -165,3 +173,4 @@ def get_dicex_base_dir():
 def get_db_system_param_value_dict(host_type='standard'):
     db_cfg_elem = xu.get_elems(system_config_root, 'cluster/job_queue/' + host_type, uniq=True)
     return xu.XmlDictConfig(db_cfg_elem)
+
