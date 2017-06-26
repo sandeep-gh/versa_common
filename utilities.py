@@ -7,6 +7,8 @@ import subprocess
 import sys
 import xmlutils as xu
 import imp
+from itertools import chain, imap, tee, product
+import  collections
 from multiprocessing.connection import Listener
 from multiprocessing.connection import Client
 
@@ -151,6 +153,7 @@ def get_qsub_queue_args(host_type='standard'):
     qsub_group_list=xu.get_value_of_key(system_config_root, 'cluster/job_queue/' + host_type + '/group')
     qsub_q=xu.get_value_of_key(system_config_root, 'cluster/job_queue/'+host_type+'/queue_name')
     qsub_ppn = xu.get_value_of_key(system_config_root, 'cluster/job_queue/'+host_type+'/queue_ppn')
+    print "host_type =", host_type, " ", qsub_group_list, qsub_q, qsub_ppn
     return [qsub_group_list, qsub_q, qsub_ppn]
     
 def get_port_server_ip():
@@ -174,3 +177,11 @@ def get_db_system_param_value_dict(host_type='standard'):
     db_cfg_elem = xu.get_elems(system_config_root, 'cluster/job_queue/' + host_type, uniq=True)
     return xu.XmlDictConfig(db_cfg_elem)
 
+
+
+def combinations_with_replacement(iterable, r):
+    pool = tuple(iterable)
+    n = len(pool)
+    for indices in product(range(n), repeat=r):
+        if sorted(indices) == list(indices):
+            yield tuple(pool[i] for i in indices)
