@@ -118,7 +118,7 @@ def get_value_of_key(root=None, key=None, path_prefix='.//'):
 
 
                       
-
+#this is the one we use most often
 #<attr>value<attr9>
 def get_value_by_attr(root, attrname):
     elem=get_elems(root, attrname, uniq=True)
