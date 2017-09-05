@@ -4,6 +4,7 @@
 <cluster_name>haswell</cluster_name>
 <dicex_base_dir>/home/pgxxc/</dicex_base_dir>
 <epifast_exec_path>/home/pgxxc/public/epifast/branches/bin/EpiFast_Indemics</epifast_exec_path>
+<!-- <epifast_exec_path>/home/sandeep/NDSSL-Software/epifast/branches/bin/EpiFast_Indemics</epifast_exec_path> -->
 <mpi_module>mvapich2/gcc</mpi_module>
 
 <!-- <update_path_env>/home/pgxxc/opensource_projects/postgresql/bin</update_path_env> -->
@@ -22,7 +23,7 @@
       <effective_cache_size>8GB</effective_cache_size>
       <max_wal_size>8GB</max_wal_size>
       <checkpoint_timeout>30min</checkpoint_timeout>
-      <max_connections>20</max_connections>
+      <max_connections>40</max_connections>
 
     </standard>
     <largemem>

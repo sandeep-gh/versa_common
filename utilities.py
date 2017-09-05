@@ -14,13 +14,18 @@ from multiprocessing.connection import Client
 
 module_dir=os.path.dirname(os.path.realpath(__file__))
 
-def get_last_file_by_pattern(pattern=None):
-    files = glob.glob(pattern)
+
+
+def get_last_file_by_pattern(pattern=None, wdir='./'):
+    if not wdir.endswith('/'):
+        wdir = wdir + '/'
+
+    files = glob.glob(wdir + pattern)
     if not files:
         return None
     if files:
         files.sort(key=os.path.getmtime)
-        return files[-1]
+        return files[-1][len(wdir):]
 
 def import_module(module_dir=None, module_name=None):
     try:
@@ -173,6 +178,13 @@ def get_dicex_base_dir():
     return  os.environ['dicex_base_dir']
 
 
+def get_shell_enviorment_source_cmd():
+    '''
+    returns command to source the dicex environment 
+    '''
+    cmd = ". " + get_dicex_base_dir() + "/" + "dicex_" + get_cluster_name() + ".sh"
+    return cmd
+
 def get_db_system_param_value_dict(host_type='standard'):
     db_cfg_elem = xu.get_elems(system_config_root, 'cluster/job_queue/' + host_type, uniq=True)
     return xu.XmlDictConfig(db_cfg_elem)
@@ -185,3 +197,24 @@ def combinations_with_replacement(iterable, r):
     for indices in product(range(n), repeat=r):
         if sorted(indices) == list(indices):
             yield tuple(pool[i] for i in indices)
+
+
+
+def partition_in_chunks(end, num_chunks):
+    k, m = divmod(end, num_chunks)
+    return [(i * k + min(i, m), (i + 1) * k + min(i + 1, m)) for i in xrange(num_chunks)]
+    
+    
+
+def run_once(f):
+    '''
+    a decorator to run a function only once
+    '''
+    def wrapper(*args, **kwargs):
+        if not wrapper.has_run:
+             wrapper.has_run = True
+             return f(*args, **kwargs)
+
+    wrapper.has_run = False
+    return wrapper
+
