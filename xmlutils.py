@@ -35,8 +35,8 @@ def read_file(xml_fn):
     try:
         xmldoc = ET.parse(xml_fn)
     except Exception as e:
-        print "file loading failed ", xml_fn
-        print e
+        print("file loading failed ", xml_fn)
+        print(e)
         sys.exit()
     root = xmldoc.getroot() 
     xml.etree.ElementInclude.include(root)

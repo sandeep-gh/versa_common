@@ -7,14 +7,19 @@ import subprocess
 import sys
 import xmlutils as xu
 import imp
-from itertools import chain, imap, tee, product
 import  collections
+import getpass
+import tempfile
 from multiprocessing.connection import Listener
 from multiprocessing.connection import Client
 
 module_dir=os.path.dirname(os.path.realpath(__file__))
 
 
+
+def get_username():
+    user=getpass.getuser()
+    return user
 
 def get_last_file_by_pattern(pattern=None, wdir='./'):
     if not wdir.endswith('/'):
@@ -57,7 +62,7 @@ def timing(f):
         time1 = time.time()
         ret = f(*args)
         time2 = time.time()
-        print '%s (%r) function took %0.3f ms' % (f.func_name,  args, (time2-time1)*1000.0)
+        print('%s (%r) function took %0.3f ms' % (f.func_name,  args, (time2-time1)*1000.0))
         return ret
     return wrap
 
@@ -67,15 +72,18 @@ def timeit(method):
         result = method(*args, **kw)
         te = time.time()
 
-        print '%r (%r, %r) %2.2f sec' % \
-              (method.__name__, args, kw, te-ts)
+        print('%r (%r, %r) %2.2f sec' % \
+              (method.__name__, args, kw, te-ts))
         return result
     return timed
 
 def build_work_dir():
-    p = subprocess.Popen('mktemp -d', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    work_dir=p.stdout.readline().rstrip()
+    work_dir=tempfile.mkdtemp()
+    print("work_dir", work_dir)
     return work_dir
+#     p = subprocess.Popen('mktemp -d', shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+#     work_dir=p.stdout.readline().rstrip()
+#     return work_dir
 
 
 def get_directory(path):
@@ -87,13 +95,13 @@ def get_filename(path):
 def wait_for_file(fn, msg, wait_time=5):
     while True:
         if not os.path.isfile(fn):
-            print msg
+            print(msg)
             time.sleep(wait_time)
         else:
             return
 def get_listener(port):
     address = (gethostname(), port)     # family is deduced to be 'AF_INET'
-    listener = Listener(address, authkey='secret password')
+    listener = Listener(address, authkey=b'secret password')
     return listener
 
 def signal_listen(listener, num_senders=1):
@@ -115,7 +123,7 @@ def signal_listen(listener, num_senders=1):
 
 def signal_send(host, port, msg='database loaded'):
     address = (host, port)     # family is deduced to be 'AF_INET'
-    conn = Client(address, authkey='secret password')
+    conn = Client(address, authkey=b'secret password')
     conn.send(msg)
     conn.close()
 
@@ -149,7 +157,7 @@ def get_new_port(port_server_ip=None):
     rport =  39785
     s.connect((port_server_ip, rport))
     port= s.recv(1024)
-    print "recived port ", port
+    print("recived port ", port)
     s.close()
     return int(port)
 
@@ -158,7 +166,7 @@ def get_qsub_queue_args(host_type='standard'):
     qsub_group_list=xu.get_value_of_key(system_config_root, 'cluster/job_queue/' + host_type + '/group')
     qsub_q=xu.get_value_of_key(system_config_root, 'cluster/job_queue/'+host_type+'/queue_name')
     qsub_ppn = xu.get_value_of_key(system_config_root, 'cluster/job_queue/'+host_type+'/queue_ppn')
-    print "host_type =", host_type, " ", qsub_group_list, qsub_q, qsub_ppn
+    print("host_type =", host_type, " ", qsub_group_list, qsub_q, qsub_ppn)
     return [qsub_group_list, qsub_q, qsub_ppn]
     
 def get_port_server_ip():
@@ -202,7 +210,7 @@ def combinations_with_replacement(iterable, r):
 
 def partition_in_chunks(end, num_chunks):
     k, m = divmod(end, num_chunks)
-    return [(i * k + min(i, m), (i + 1) * k + min(i + 1, m)) for i in xrange(num_chunks)]
+    return [(i * k + min(i, m), (i + 1) * k + min(i + 1, m)) for i in range(num_chunks)]
     
     
 
