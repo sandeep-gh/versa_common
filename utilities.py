@@ -10,6 +10,7 @@ import imp
 import  collections
 import getpass
 import tempfile
+from itertools import tee, product
 from multiprocessing.connection import Listener
 from multiprocessing.connection import Client
 

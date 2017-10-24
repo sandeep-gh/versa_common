@@ -13,6 +13,7 @@ import collections
 #keys are elements that are queried
 #value is string literal
 
+#TODO: Phase out usage of XmlDictConfig 
 module_dir=os.path.dirname(os.path.realpath(__file__))
 
 def check_if_xml_tree(data):
@@ -92,6 +93,15 @@ def get_elems(root, attrname, path_prefix=".//", uniq=False, error_if_not_found=
         return all_attr_elems[0]
     return all_attr_elems
 
+def get_parent_elem(root, attrname, path_prefix=".//", uniq=True):
+    '''
+    return parent elem of the elem corresponding to attrname
+    '''
+    parent_elems = root.findall(path_prefix + attrname + "/..")
+    if uniq == True:
+        assert len(parent_elems) == 1 #attrname should match to one uniq elem
+        return parent_elems[0] #this
+    return parent_elems
 
 def get_value_elems(root, attrname):
     values=[]
@@ -202,6 +212,10 @@ def dock_elem_value(cfg_root=None, dock_path=None, elem_name=None, elem_value=No
         dock_elem.append(node)
     else:
         cfg_root.append(node)
+
+#Bugs in python: cfg_root has append, list has append. List are everywhere. mistake can happen when passing a list
+#instead of cfg_root. 
+#solution: don't mix while coding; keep everything consistent either everything is list and or not. 
 
 def append_elem(dock_root, elem_root):
     '''
